@@ -32,27 +32,24 @@ const TopStats = () => {
     REQUESTS[0],
     0,
     'total_users',
-    true
   );
-  const [dataTotalVolume, loadingVol, errorVol] = useRequest(REQUESTS[1], 0, 'chart_data', true);
+  const [dataTotalVolume, loadingVol, errorVol] = useRequest(REQUESTS[1], 0, 'chart_data');
   const [totalVolume, setTotalVolume] = useState<number>(0);
   const [dataTotalDeposits, loadingTotalDeposits, errorTotalDeposits] = useRequest(
     REQUESTS[2],
     0,
-    'total_deposits',
-    true
+    'total_deposits'
   );
   const [dataTotalWithdrawals, loadingTotalWithdrawals, errorTotalWithdrawals] = useRequest(
     REQUESTS[3],
     0,
     'total_withdrawals',
-    true
   );
   const [
     dataTotalNotionalLiquidated,
     loadingTotalNotionalLiquidated,
     errorTotalNotionalLiquidated,
-  ] = useRequest(REQUESTS[4], 0, 'total_notional_liquidated', true);
+  ] = useRequest(REQUESTS[4], 0, 'total_notional_liquidated');
 
   interface TotalVolume {
     time: string;
