@@ -93,7 +93,7 @@ export default function CumulativeInflow() {
     if (!loading && !errorDailyInflow) {
       formatData();
     }
-  }, [loading, errorDailyInflow]);
+  }, [dataDailyInflow, dataCumulativeInflow, loading, errorDailyInflow]);
 
   return (
     <ChartWrapper title='Inflows' loading={loading}>

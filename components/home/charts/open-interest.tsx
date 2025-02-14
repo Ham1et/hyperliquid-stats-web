@@ -99,7 +99,7 @@ export default function OpenInterestChart() {
     if (!loading && !error) {
       formatData();
     }
-  }, [loading]);
+  }, [dataOpenInterest, loading]);
 
   const coinSelectors = createCoinSelectors(
     coins,

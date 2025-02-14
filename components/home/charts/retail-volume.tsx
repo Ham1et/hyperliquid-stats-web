@@ -240,7 +240,7 @@ export default function RetailVolumeChart() {
     if (!loading || error) {
       formatData(coinsSelected);
     }
-  }, [loading, error]);
+  }, [dataCumulativeUsdVolume, loading, error]);
 
   const coinSelectors = createCoinSelectors(
     coinKeys,

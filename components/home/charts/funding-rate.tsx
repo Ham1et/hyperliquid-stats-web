@@ -97,7 +97,7 @@ export default function FundingRate() {
       const uniqueCoins = extractUniqueCoins(dataFundingRate);
       setCoinKeys(uniqueCoins);
     }
-  }, [loading, dataFundingRate]);
+  }, [dataFundingRate, loading, dataFundingRate]);
 
   const formatData = () => {
     if (dataFundingRate) {
@@ -110,7 +110,7 @@ export default function FundingRate() {
     if (!loading && !error) {
       formatData();
     }
-  }, [loading, coinsSelected]);
+  }, [dataFundingRate, loading, coinsSelected]);
 
   const coinSelectors = createCoinSelectors(coinKeys, coinsSelected, setCoinsSelected, formatData);
 

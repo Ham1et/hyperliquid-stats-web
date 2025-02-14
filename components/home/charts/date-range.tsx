@@ -1,9 +1,10 @@
-import { useState, useEffect, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Select from 'react-dropdown-select';
 import { Box } from '@chakra-ui/react';
 import moment from 'moment';
 import { DateRange } from 'react-date-range';
-import strftime, { timezone } from 'strftime';
+import strftime from 'strftime';
 import { DataContext } from '../../../contexts/data';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
@@ -13,34 +14,63 @@ const DATA_START_DATE = new Date('2023-06-14T20:00:00.000');
 const DATE_NOW = new Date();
 
 export const DateRangeSelect = () => {
-  const { setDates } = useContext(DataContext);
-
+  const { setDates, dates } = useContext(DataContext);
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedDateRangeOption, setSelectedDateRangeOption] = useState<number | null>(null);
-  const [rangeState, setRangeState] = useState<
-    { startDate: Date | undefined; endDate: Date | undefined; key: string }[]
-  >([
-    {
-      startDate: DATA_START_DATE,
-      endDate: DATE_NOW,
-      key: 'selection',
-    },
-  ]);
 
-  console.log({
-    startDate: DATA_START_DATE,
-    endDate: new Date(),
+  const isValidDate = (dateString: string) => {
+    return moment(dateString, 'MM-DD-YY', true).isValid();
+  };
+
+  const getInitialDate = (key: string, fallback: Date) => {
+    const param = searchParams.get(key);
+    if (!param || !isValidDate(param)) return fallback;
+    const date = moment(param, 'MM-DD-YY').toDate();
+    if (key === 'from' && date < DATA_START_DATE) return DATA_START_DATE;
+    if (key === 'to' && date > DATE_NOW) return DATE_NOW;
+    return date;
+  };
+
+  const initialFrom = getInitialDate('from', DATA_START_DATE);
+  const initialTo = getInitialDate('to', DATE_NOW);
+  const correctedFrom = initialFrom > initialTo ? DATA_START_DATE : initialFrom;
+  const correctedTo = initialFrom > initialTo ? DATE_NOW : initialTo;
+
+  const [rangeState, setRangeState] = useState({
+    startDate: correctedFrom,
+    endDate: correctedTo,
     key: 'selection',
   });
 
-  const [dataRange, setDataRange] = useState({ fromValue: DATA_START_DATE, toValue: DATE_NOW });
+  const updateQueryParams = (from: Date, to: Date) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (from) params.set('from', strftime('%m-%d-%y', from));
+    else params.delete('from');
+    if (to) params.set('to', strftime('%m-%d-%y', to));
+    else params.delete('to');
+    router.push(`?${params.toString()}`);
+    window.history.replaceState(null, '', `?${params.toString()}`);
+  };
+
+  useEffect(() => {
+    updateQueryParams(rangeState.startDate, rangeState.endDate);
+    setDates({
+      from: strftime('%Y-%m-%d', rangeState.startDate),
+      to: strftime('%Y-%m-%d', rangeState.endDate),
+    });
+  }, []);
 
   const onChange = (selectedDates: any) => {
     const [start, end] = selectedDates;
     const from = start ? strftime('%Y-%m-%d', new Date(start)) : undefined;
     const to = end ? strftime('%Y-%m-%d', end) : undefined;
-    if (from === to) return;
-    setDataRange({ fromValue: start, toValue: end });
+    if (from === to || !from || !to) return;
+    setRangeState({ startDate: new Date(from), endDate: new Date(to), key: 'selection' });
     setDates({ from, to });
+    if (from && to) {
+      updateQueryParams(start, end);
+    }
   };
 
   const dateRangeOptions = [
@@ -54,16 +84,6 @@ export const DateRangeSelect = () => {
       isDefault: true,
     },
   ];
-
-  useEffect(() => {
-    setRangeState([
-      {
-        startDate: dataRange.fromValue,
-        endDate: dataRange.toValue,
-        key: 'selection',
-      },
-    ]);
-  }, [dataRange.fromValue, dataRange.toValue]);
 
   const onSelectItem = (option: { id: number; label: string; isDefault?: boolean }) => {
     if (option.id == ALL_TIME_ID) {
@@ -95,7 +115,6 @@ export const DateRangeSelect = () => {
   }, []);
 
   const onDateRangeChange = (item: any) => {
-    setRangeState([item.selection]);
     if (item.selection.startDate == item.selection.endDate) {
       return;
     }
@@ -105,13 +124,13 @@ export const DateRangeSelect = () => {
   const customContentRenderer = () => {
     return (
       <div style={{ cursor: 'pointer' }}>
-        {dataRange.fromValue &&
-          dataRange.toValue &&
-          `${strftime('%m-%d-%y', dataRange.fromValue)} to ${strftime(
+        {rangeState.startDate &&
+          rangeState.endDate &&
+          `${strftime('%m-%d-%y', rangeState.startDate)} to ${strftime(
             '%m-%d-%y',
-            dataRange.toValue
+            rangeState.endDate
           )}`}
-        {(!dataRange.fromValue || !dataRange.toValue) && 'All time'}
+        {(!rangeState.startDate || !rangeState.endDate) && 'All time'}
       </div>
     );
   };
@@ -124,7 +143,7 @@ export const DateRangeSelect = () => {
             editableDateInputs={true}
             onChange={onDateRangeChange}
             moveRangeOnFirstSelection={false}
-            ranges={rangeState}
+            ranges={[rangeState]}
             showDateDisplay={false}
             fixedHeight={false}
             minDate={DATA_START_DATE}

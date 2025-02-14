@@ -176,7 +176,7 @@ export default function UniqueUsers() {
     if (!loading && !error) {
       formatData(coinsSelected);
     }
-  }, [loading]);
+  }, [dataCumulativeNewUsers, dataDailyUniqueUsers, dataDailyUniqueUsersByCoin, loading]);
 
   const coinSelectors = createCoinSelectors(coinKeys, coinsSelected, setCoinsSelected, formatData);
 

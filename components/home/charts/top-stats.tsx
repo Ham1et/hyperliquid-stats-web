@@ -73,7 +73,7 @@ const TopStats = () => {
     if (!loadingVol && !errorVol && dataTotalVolume) {
       computeTotalVolume(dataTotalVolume);
     }
-  }, [loadingVol, errorVol]);
+  }, [dataTotalVolume, loadingVol, errorVol]);
 
   return (
     <Grid

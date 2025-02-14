@@ -229,7 +229,14 @@ export default function LiquidatorChart(props: any) {
     if (!loading && !error) {
       formatData(coinsSelected);
     }
-  }, [loading, error]);
+  }, [
+    dataCumulativeLiquidated,
+    dataDailyLiquidatedTotal,
+    dataDailyLiquidatedByMargin,
+    dataDailyLiquidatedByCoins,
+    loading,
+    error,
+  ]);
 
   const dataModeToData = (dataMode: string) => {
     switch (dataMode) {

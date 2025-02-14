@@ -68,7 +68,7 @@ export default function CumulativeUsers() {
     if (!loading || !error) {
       formatData();
     }
-  }, [loading, error]);
+  }, [dataCumulativeNewUsers, loading, error]);
 
   return (
     <ChartWrapper title='Cumulative New Users' loading={loading}>

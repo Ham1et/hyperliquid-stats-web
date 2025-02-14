@@ -233,7 +233,7 @@ export default function VolumeChart() {
     if (!loading && !error) {
       formatData(coinsSelected);
     }
-  }, [loading, dataMode]);
+  }, [dataDailyTradesByCoin, loading, dataMode]);
 
   const coinSelectors = createCoinSelectors(coinKeys, coinsSelected, setCoinsSelected, formatData);
 

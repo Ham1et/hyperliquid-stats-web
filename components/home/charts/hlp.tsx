@@ -232,7 +232,7 @@ export default function Hlp() {
     if (!loading && !error) {
       formatData();
     }
-  }, [loading, error]);
+  }, [assetCtxs, dataHlpPositions, dataHlpPnL, loading, error]);
 
   return (
     <ChartWrapper title='HLP' loading={false} controls={controls}>

@@ -232,7 +232,7 @@ export default function Liquidity() {
     if (!loading && !error) {
       formatData();
     }
-  }, [loading, coinKeys]);
+  }, [dataLiqudity, loading, coinKeys]);
 
   let chartData;
   let chartDataCoinKeys;

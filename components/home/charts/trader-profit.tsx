@@ -98,7 +98,7 @@ export default function TradersProfitLossChart(props: any) {
     if (!loading && !error) {
       formatTradingData();
     }
-  }, [loading, error]);
+  }, [dataCumulativeUserPNL, dataUserPNL, loading, error]);
 
   return (
     <ChartWrapper title='Traders Net PnL' loading={loading}>

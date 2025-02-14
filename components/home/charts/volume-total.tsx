@@ -113,7 +113,7 @@ export default function TotalVolumeChart() {
     if (!loading && !error) {
       formatData(coinsSelected);
     }
-  }, [loading, error]);
+  }, [dataTotalVolume, loading, error]);
 
   const coinSelectors = createCoinSelectors(
     coins,
